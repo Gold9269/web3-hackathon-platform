@@ -2,9 +2,10 @@ import mongoose from "mongoose";
 
 const hackathonSchema = new mongoose.Schema(
   {
-    title: {
+    name: {
       type: String,
       required: true,
+      unique:true
     },
     description: {
       type: String,
@@ -13,7 +14,6 @@ const hackathonSchema = new mongoose.Schema(
     organizerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
     },
     finaleDate: {
       type: Date,
@@ -23,7 +23,7 @@ const hackathonSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    isVoteActive: {
+    votingOpen: {
       type: Boolean,
       default: false,
     },
@@ -39,7 +39,10 @@ const hackathonSchema = new mongoose.Schema(
       type: Number,
       default: 1,
     },
-  },
+    banner:{
+      type:String,
+    }
+    },
   { timestamps: true }
 );
 

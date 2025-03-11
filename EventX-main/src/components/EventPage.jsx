@@ -147,8 +147,9 @@ function EventPage() {
             >
               <span>Start Round</span>
               <ChevronRight className="h-5 w-5 transform group-hover:translate-x-1 transition-transform" />
-            </motion.button></Link>:
-            <Link to=""><motion.button
+            </motion.button></Link>
+            :
+            <Link to={`/${hackathon._id}/participants`}><motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="group px-8 py-4 bg-gradient-to-br from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white font-bold rounded-xl shadow-2xl shadow-amber-500/30 hover:shadow-amber-500/50 transition-all duration-300 flex items-center gap-3"

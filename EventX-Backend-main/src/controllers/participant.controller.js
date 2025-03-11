@@ -1,9 +1,9 @@
-import Team from '../models/team.model.js';
+import {Team} from '../models/team.model.js';
 import { User } from '../models/user.model.js';
 import { Hackathon } from '../models/hackathon.model.js';
 import mongoose, { mongo } from "mongoose";
 
-const createTeam = async (req, res) => {
+export const createTeam = async (req, res) => {
   try {
     const {resumeScore,teamName, memberEmails = [] } = req.body;
     const {hackathonName} =req.params;
@@ -132,35 +132,40 @@ const createTeam = async (req, res) => {
   }
 };
 
-// Updated to handle email-based invitations
-const joinTeam = async (req, res) => {
+
+export const getAllTeams = async(req,res)=>{
   try {
-    const { teamName } = req.params;
+    const {hackathonId} = req.params;
+    const teams = await Team.find({hackathonId});
+    
+    res.status(200).json(teams)
+  } catch (error) {
+    res.status(500).json({message:"Error while fetching"})
+  }
+}
+
+export const joinTeam = async (req, res) => {
+  try {
+    const { id } = req.params;
     const userId = req.user._id;
     
-    // Check if team exists
-    const team = await Team.findOne({teamName:teamName});
+
+    const team = await Team.findById(id);
     if (!team) {
-      return res.status(404).json({
-        success: false,
-        message: "Team not found"
-      });
-    }
-    
-    // Check if the hackathon exists
+            return res.status(404).json({
+              success: false,
+              message: "Team not found"
+            });
+          }
+
     const hackathon = await Hackathon.findById(team.hackathonId);
-    if (!hackathon) {
-      return res.status(404).json({
-        success: false,
-        message: "Hackathon not found"
-      });
-    }
-    
+
     // Check if user is already in this team
     if (team.leaderId.equals(userId) || team.memberIds.includes(userId)) {
       return res.status(400).json({
         success: false,
-        message: "You are already a member of this team"
+        message: "You are already a member of this team",
+        teamId:team._id
       });
     }
     
@@ -172,39 +177,44 @@ const joinTeam = async (req, res) => {
         { memberIds: userId }
       ]
     });
-    
-    if (existingTeam) {
+
+      if (existingTeam) {
       return res.status(400).json({
         success: false,
-        message: "You are already part of a team for this hackathon"
+        message: "You are already part of a team for this hackathon",
+        teamId:team._id
       });
     }
-    
-    // Check if team is already at max capacity
-    if (team.memberIds.length + 1 >= hackathon.maxTeamSize) {
-      return res.status(400).json({
-        success: false,
-        message: "Team is already at maximum capacity"
-      });
-    }
-    // Add user to the team
-    team.memberIds.push(userId);
+
+
+      //Check if team is already at max capacity
+      if (team.memberIds.length + 1 >= hackathon.maxTeamSize) {
+        return res.status(400).json({
+          success: false,
+          message: "Team is already at maximum capacity"
+        });
+      }
+
+    team.memberIds.push(req.user._id);
+
     await team.save();
     
-    return res.status(200).json({
-      success: true,
-      message: "Successfully joined the team",
-      team
-    });
-    
+    res.status(200).json(team._id);
   } catch (error) {
-    console.error("Error joining team:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Error joining team",
-      error: error.message
-    });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-export { createTeam, joinTeam};
+export const getTeam = async(req,res) => {
+  const {id} = req.params;
+  const response = await Team.findById(id);
+
+  if(!response) return res.status(500).json({message:"Team not found"})
+
+    const users = await User.find({ _id: { $in: response.memberIds } }, "name");
+    
+    const data = response.toObject();
+    data.membersName = users;
+
+  return res.status(200).json(data)
+}

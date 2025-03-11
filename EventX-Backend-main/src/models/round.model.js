@@ -17,12 +17,6 @@ const roundSchema = new mongoose.Schema(
     },
     roundType: {
       type: String,
-      enum: [
-        "Profile Reviewing",
-        "Presentation Submission",
-        "Judging",
-        "Finale Round",
-      ],
       required: true,
     },
     judgingCriteria: {

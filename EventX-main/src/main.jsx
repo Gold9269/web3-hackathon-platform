@@ -13,6 +13,8 @@ import Event from "./components/Event.jsx"
 import OrganizeEventForm from './components/Organize.jsx'
 import EventPage from './components/EventPage.jsx'
 import AddRound from './components/AddRound.jsx'
+import TeamDashboard from './components/TeamDashboard.jsx'
+import Participants from './components/Participants.jsx'
 
 
 const router = createBrowserRouter([
@@ -70,6 +72,22 @@ const router = createBrowserRouter([
         element:(
           <AuthLayout authentication={true}>
           <AddRound/>
+          </AuthLayout>
+        )
+      },
+      {
+        path: "/:id/participants",
+        element:(
+          <AuthLayout authentication={true}>
+            <TeamDashboard/>
+          </AuthLayout>
+        )
+      },
+      {
+        path: "/team/:teamId",
+        element:(
+          <AuthLayout authentication={true}>
+            <Participants/>
           </AuthLayout>
         )
       }

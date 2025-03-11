@@ -16,14 +16,21 @@ const userSchema = new mongoose.Schema(
     },
     avatar:{
       type:String,
-      default:"https://i.sstatic.net/frlIf.png"
+      default:"https://res.cloudinary.com/dhxgaemnk/image/upload/v1741610813/Screenshot_2025-03-10_181632_a8mcwt.png"
     },
     walletAddress:{
       type:String
     },
     refreshToken: {
       type: String,
-    }
+    },
+    ownedHackathons:[
+      {
+        type: mongoose.Schema.Types.ObjectId, 
+        ref:"Hackathon"
+      }
+    ]
+  
   },
   { timestamps: true }
 );

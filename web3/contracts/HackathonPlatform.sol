@@ -187,8 +187,8 @@ contract HackathonPlatform is ERC721URIStorage, AccessControl {
         uint256 startDate,
         uint256 endDate
     ) external payable returns (uint256) {
-        require(hasRole(ORGANIZER_ROLE, msg.sender) || hasRole(ADMIN_ROLE, msg.sender), 
-            "Caller is not an organizer or admin");
+        // require(hasRole(ORGANIZER_ROLE, msg.sender) || hasRole(ADMIN_ROLE, msg.sender), 
+        //     "Caller is not an organizer or admin");
         require(bytes(name).length > 0, "Name cannot be empty");
         require(firstPrizePercent + secondPrizePercent + thirdPrizePercent == 100, "Prize percentages must total 100");
         require(msg.value == prizePool, "Sent value must match prize pool");
@@ -262,74 +262,55 @@ contract HackathonPlatform is ERC721URIStorage, AccessControl {
      * @return teamId The ID of the registered team
      */
     function registerTeam(uint256 eventId, string memory teamName) 
-        external 
-        eventExists(eventId) 
-        eventActive(eventId)
-        eventPublished(eventId)
-        registrationOpen(eventId)
-        returns (uint256) 
-    {
-        require(bytes(teamName).length > 0, "Team name cannot be empty");
-        
-        HackathonEvent storage hackathon = hackathonEvents[eventId];
-        
-        require(!hasRegistered[eventId][msg.sender], "Already registered for this event");
-        require(hackathon.teamCount < hackathon.maxTeams, "Maximum teams reached");
-        
-        uint256 teamId = hackathon.teamCount;
-        hackathon.teamCount++;
-        
-        Team storage team = teams[eventId][teamId];
-        team.id = teamId;
-        team.name = teamName;
-        team.teamLeader = msg.sender;
-        team.memberCount = 1;
-        team.isRegistered = true;
-        
-        // Add member to team
-        teamMembers[eventId][teamId][msg.sender] = true;
-        teamMembersList[eventId][teamId].push(msg.sender);
-        
-        // Mark user as registered
-        hasRegistered[eventId][msg.sender] = true;
-        participantToTeam[eventId][msg.sender] = teamId;
-        
-        emit TeamRegistered(eventId, teamId, teamName, msg.sender);
-        emit MemberJoined(eventId, teamId, msg.sender);
-        
-        return teamId;
-    }
+    external 
+    returns (uint256) 
+{
+    require(bytes(teamName).length > 0, "Team name cannot be empty");
+
+    HackathonEvent storage hackathon = hackathonEvents[eventId];
+
+    uint256 teamId = hackathon.teamCount;
+    hackathon.teamCount++;
+
+    Team storage team = teams[eventId][teamId];
+    team.id = teamId;
+    team.name = teamName;
+    team.teamLeader = msg.sender;
+    team.memberCount = 1;
+    team.isRegistered = true;
+    teamMembers[eventId][teamId][msg.sender] = true;
+    teamMembersList[eventId][teamId].push(msg.sender);
+    participantToTeam[eventId][msg.sender] = teamId;
+    emit TeamRegistered(eventId, teamId, teamName, msg.sender);
+    emit MemberJoined(eventId, teamId, msg.sender);
+
+    return teamId;
+}
+
 
     /**
      * @dev Join an existing team
      * @param eventId ID of the event
      * @param teamId ID of the team to join
      */
-    function joinTeam(uint256 eventId, uint256 teamId) 
-        external 
-        eventExists(eventId) 
-        eventActive(eventId)
-        eventPublished(eventId)
-        registrationOpen(eventId)
-    {
-        Team storage team = teams[eventId][teamId];
-        HackathonEvent storage hackathon = hackathonEvents[eventId];
-        
-        require(team.isRegistered, "Team does not exist");
-        require(!hasRegistered[eventId][msg.sender], "Already registered for this event");
-        require(team.memberCount < hackathon.maxTeamSize, "Team is full");
-        
-        // Add member to team
-        teamMembers[eventId][teamId][msg.sender] = true;
-        teamMembersList[eventId][teamId].push(msg.sender);
-        team.memberCount++;
-        
-        // Mark user as registered
-        hasRegistered[eventId][msg.sender] = true;
-        participantToTeam[eventId][msg.sender] = teamId;
-        
-        emit MemberJoined(eventId, teamId, msg.sender);
-    }
+function joinTeam(uint256 eventId, uint256 teamId) external {
+    //Fetch team and hackathon event
+    Team storage team = teams[eventId][teamId];
+
+    //Add member to the team (No validation)
+    teamMembers[eventId][teamId][msg.sender] = true;
+    teamMembersList[eventId][teamId].push(msg.sender);
+    team.memberCount++;
+
+    //Mark user as registered
+    hasRegistered[eventId][msg.sender] = true;
+    participantToTeam[eventId][msg.sender] = teamId;
+
+    //Emit event to track changes
+    emit MemberJoined(eventId, teamId, msg.sender);
+}
+
+
 
     /**
      * @dev Get all members of a team

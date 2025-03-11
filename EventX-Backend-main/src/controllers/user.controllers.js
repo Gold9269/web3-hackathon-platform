@@ -26,10 +26,10 @@ export const registerUser = async(req,res)=>{
     console.log(req.body);
     
     try {
-        const {name,email,password,role} = req.body;
+        const {name,email,password} = req.body;
     
         if(
-            [name,email,password,role].some((field)=> field?.trim()==="" )
+            [name,email,password].some((field)=> field?.trim()==="")
         ){
             throw new Error("Fill all the fields");
         }
@@ -43,7 +43,6 @@ export const registerUser = async(req,res)=>{
         const user = await User.create({
             name,
             email,
-            role,
             password
         })
         console.log("User created");
