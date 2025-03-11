@@ -5,7 +5,7 @@ import { Outlet } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import authService from './backend/auth.js';
 import { useEffect } from 'react';
-import { login } from './store/authSlice.js';
+import { login,logout } from './store/authSlice.js';
 
 function App() {
   const dispatch = useDispatch();

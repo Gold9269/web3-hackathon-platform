@@ -4,18 +4,19 @@ import { Wallet } from "lucide-react";
 import { useSelector } from "react-redux";
 import classNames from "classnames";
 
-const AvatarDropdown = () => {
+const Avatar= () => {
   const user = useSelector((state) => state.auth?.user);
-  const avatarSrc = user?.avatar || "https://via.placeholder.com/40";
+  const avatarSrc = user?.avatar || "https://i.sstatic.net/frlIf.png";
   const userName = user?.name || "John Doe";
   const userEmail = user?.email || "john@example.com";
 
+ 
   return (
     <div className="relative">
       <Menu as="div" className="relative">
         <div>
           <Menu.Button className="flex items-center rounded-full bg-white dark:bg-gray-900 p-1 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2">
-            <img className="h-8 w-8 rounded-full" src={avatarSrc} alt="User Avatar" />
+            <img className="h-8 w-8 rounded-full" src={`${avatarSrc}`} alt="User Avatar" />
           </Menu.Button>
         </div>
 
@@ -74,4 +75,4 @@ const AvatarDropdown = () => {
   );
 };
 
-export default AvatarDropdown;
+export default Avatar;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Globe, Menu, X } from 'lucide-react';
+import { Trophy,Menu, X } from 'lucide-react';
 import LogoutBtn from './LogoutBtn';
 import { useSelector } from 'react-redux';
 import AvatarDropdown from '../AvatarDropdown';
@@ -29,14 +29,11 @@ const Header = () => {
             </Link>
 
             <div className="hidden sm:ml-10 sm:flex sm:space-x-8">
-              <Link to="/events" className= " eb text-gray-900 dark:text-yellow-400 hover:text-yellow-600 dark:hover:text-yellow-300 px-3 py-2 text-sm font-medium">
+              <Link to="/browse-events" className= " eb text-gray-900 dark:text-yellow-400 hover:text-yellow-600 dark:hover:text-yellow-300 px-3 py-2 text-sm font-medium">
                  Browse Events
               </Link>
-              <Link to="/hackathons" className="eb text-gray-900 dark:text-yellow-400 hover:text-yellow-600 dark:hover:text-yellow-300 px-3 py-2 text-sm font-medium">
-                Hackathons
-              </Link>
-              <Link to="/dashboard" className="eb text-gray-900 dark:text-yellow-400 hover:text-yellow-600 dark:hover:text-yellow-300 px-3 py-2 text-sm font-medium">
-                Dashboard
+              <Link to="/organize" className="eb text-gray-900 dark:text-yellow-400 hover:text-yellow-600 dark:hover:text-yellow-300 px-3 py-2 text-sm font-medium">
+                organize
               </Link>
               <Link to="/resources" className="eb text-gray-900 dark:text-yellow-400 hover:text-yellow-600 dark:hover:text-yellow-300 px-3 py-2 text-sm font-medium">
                 Resources

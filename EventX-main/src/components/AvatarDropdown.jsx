@@ -9,7 +9,7 @@ const AvatarDropdown = () => {
   const userData = useSelector(state=>state.auth?.userData)
   
   const userStatus = useSelector((state) => state.auth?.status);
-  const avatarSrc = userData?.avatar;
+  const avatarSrc = userData?.avatar  || "https://i.sstatic.net/frlIf.png";
   console.log("Avatar Data Type:", typeof userData?.avatar);
 
   
@@ -22,7 +22,7 @@ const AvatarDropdown = () => {
       <Menu as="div" className="relative">
         <div>
           <Menu.Button className="flex items-center rounded-full bg-white dark:bg-gray-900 p-1 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2">
-            <img className="h-8 w-8 rounded-full" src={`${avatarSrc}`} alt="User Avatar" />
+            <img className="h-8 w-8 rounded-full" src={`${avatarSrc}`} crossOrigin="anonymous" />
           </Menu.Button>
         </div>
 

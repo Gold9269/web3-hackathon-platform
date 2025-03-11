@@ -1,4 +1,3 @@
-// src/store/contractSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import * as contractUtils from '../contracts/contractUtils';
 
@@ -91,11 +90,19 @@ export const createNewHackathon = createAsyncThunk(
   'contract/createHackathon',
   async (hackathonData, { rejectWithValue }) => {
     try {
+      console.log("Creating hackathon with data:", hackathonData);
+      
+      // prizePool should already be in BigInt format from the component
+      // Do NOT parse it again if it's already a BigInt
+      const prizePool = typeof hackathonData.prizePool === 'string' 
+        ? hackathonData.prizePool 
+        : hackathonData.prizePool.toString();
+      
       // Send transaction to create a new hackathon
       const tx = await contractUtils.createHackathon(
         hackathonData.name,
         hackathonData.description,
-        hackathonData.prizePool,
+        prizePool,
         hackathonData.firstPrizePercent,
         hackathonData.secondPrizePercent,
         hackathonData.thirdPrizePercent,
@@ -105,16 +112,21 @@ export const createNewHackathon = createAsyncThunk(
         hackathonData.endDate
       );
       
+      console.log("Transaction sent:", tx);
+      
       // Wait for transaction to be mined
       const receipt = await tx.wait();
+      console.log("Transaction receipt:", receipt);
       
       // Find the event that was emitted and get the new event ID
-      const event = receipt.events.find(e => e.event === 'HackathonCreated');
-      const eventId = event.args.eventId.toNumber();
-      
+      const event = receipt?.events?.find(e => e?.event === 'HackathonCreated');
+      const eventId = event?.args?.eventId.toNumber();
+      console.log("event is -->",event);
+      console.log("eventid is -->".eventId);
       // Return the new hackathon data along with its ID
       return { eventId, ...hackathonData };
     } catch (error) {
+      console.error("Error in createNewHackathon thunk:", error);
       return rejectWithValue(error.message || 'Failed to create hackathon');
     }
   }
